@@ -98,7 +98,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	ctx := context.Background()
+	// Use a cancellable context so a SIGINT/SIGTERM can propagate a clean
+	// shutdown through the server rather than killing the process abruptly.
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	if err := server.Start(ctx); err != nil {
 		log.Errorf("server error: %v", err)
 		os.Exit(1)

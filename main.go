@@ -65,6 +65,10 @@ func main() {
 			log.Errorf("failed to load config file %q: %v", *config, err)
 			os.Exit(1)
 		}
+	} else {
+		// No config file found anywhere; log a warning so it's obvious in local
+		// dev that we're running with purely flag/env-based configuration.
+		log.Printf("no config file found, proceeding with flags and environment variables only")
 	}
 
 	if *convertConfig {

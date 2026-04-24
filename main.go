@@ -50,6 +50,7 @@ func main() {
 		for _, candidate := range []string{
 			"oauth2-proxy.cfg",
 			xdgConfig + "/oauth2-proxy/oauth2-proxy.cfg",
+			"/etc/oauth2-proxy/oauth2-proxy.cfg",
 		} {
 			if _, err := os.Stat(candidate); err == nil {
 				*config = candidate

@@ -41,8 +41,16 @@ func main() {
 	// If no config file is explicitly provided, fall back to a default location
 	// for convenience when running locally without specifying --config each time.
 	// Also check the user's home config directory as a secondary fallback.
+	// Added XDG_CONFIG_HOME support as a tertiary fallback for Linux desktops.
 	if *config == "" {
-		for _, candidate := range []string{"oauth2-proxy.cfg", os.Getenv("HOME") + "/.config/oauth2-proxy/oauth2-proxy.cfg"} {
+		xdgConfig := os.Getenv("XDG_CONFIG_HOME")
+		if xdgConfig == "" {
+			xdgConfig = os.Getenv("HOME") + "/.config"
+		}
+		for _, candidate := range []string{
+			"oauth2-proxy.cfg",
+			xdgConfig + "/oauth2-proxy/oauth2-proxy.cfg",
+		} {
 			if _, err := os.Stat(candidate); err == nil {
 				*config = candidate
 				log.Printf("no --config flag provided, using default config file: %s", candidate)

@@ -38,6 +38,15 @@ func main() {
 		return
 	}
 
+	// If no config file is explicitly provided, fall back to a default location
+	// for convenience when running locally without specifying --config each time.
+	if *config == "" {
+		if _, err := os.Stat("oauth2-proxy.cfg"); err == nil {
+			*config = "oauth2-proxy.cfg"
+			log.Printf("no --config flag provided, using default config file: oauth2-proxy.cfg")
+		}
+	}
+
 	if *config != "" {
 		if err := options.Load(*config, opts); err != nil {
 			log.Errorf("failed to load config file %q: %v", *config, err)

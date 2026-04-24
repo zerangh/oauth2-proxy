@@ -40,10 +40,14 @@ func main() {
 
 	// If no config file is explicitly provided, fall back to a default location
 	// for convenience when running locally without specifying --config each time.
+	// Also check the user's home config directory as a secondary fallback.
 	if *config == "" {
-		if _, err := os.Stat("oauth2-proxy.cfg"); err == nil {
-			*config = "oauth2-proxy.cfg"
-			log.Printf("no --config flag provided, using default config file: oauth2-proxy.cfg")
+		for _, candidate := range []string{"oauth2-proxy.cfg", os.Getenv("HOME") + "/.config/oauth2-proxy/oauth2-proxy.cfg"} {
+			if _, err := os.Stat(candidate); err == nil {
+				*config = candidate
+				log.Printf("no --config flag provided, using default config file: %s", candidate)
+				break
+			}
 		}
 	}
 

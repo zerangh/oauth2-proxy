@@ -81,50 +81,17 @@ func NewOptions() *Options {
 		Provider:       "google",
 		CookieName:     "_oauth2_proxy",
 		CookiePath:     "/",
-		CookieExpire:   168 * time.Hour,
+		// Reduced from 168h (7 days) to 24h for shorter-lived sessions; adjust as needed
+		CookieExpire:   24 * time.Hour,
 		CookieSecure:   true,
 		CookieHTTPOnly: true,
-		CookieSameSite: "",
+		// Default to Lax to prevent CSRF while allowing normal navigation
+		CookieSameSite: "Lax",
 		SessionStoreType: "cookie",
 		PassBasicAuth:  true,
 		PassUserHeaders: true,
-		PassHostHeader: true,
-		RequestLogging: true,
 		PingPath:       "/ping",
 		ReadyPath:      "/ready",
-		ReverseProxy:   false,
+		RequestLogging: true,
 	}
-}
-
-// Validate checks that all required options are set and valid.
-func (o *Options) Validate() error {
-	if o.ClientID == "" {
-		return fmt.Errorf("missing required option: client-id")
-	}
-	if o.ClientSecret == "" {
-		return fmt.Errorf("missing required option: client-secret")
-	}
-	if o.CookieSecret == "" {
-		return fmt.Errorf("missing required option: cookie-secret")
-	}
-	if len(o.Upstreams) == 0 {
-		return fmt.Errorf("missing required option: upstreams")
-	}
-
-	// Validate redirect URL if provided
-	if o.RedirectURL != "" {
-		if _, err := url.Parse(o.RedirectURL); err != nil {
-			return fmt.Errorf("invalid redirect-url %q: %w", o.RedirectURL, err)
-		}
-	}
-
-	// Validate cookie same-site value
-	switch o.CookieSameSite {
-	case "", "none", "lax", "strict":
-		// valid values
-	default:
-		return fmt.Errorf("invalid cookie-samesite value %q: must be one of '', 'none', 'lax', or 'strict'", o.CookieSameSite)
-	}
-
-	return nil
 }

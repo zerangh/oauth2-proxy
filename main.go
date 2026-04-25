@@ -50,6 +50,7 @@ func main() {
 		for _, candidate := range []string{
 			"oauth2-proxy.cfg",
 			xdgConfig + "/oauth2-proxy/oauth2-proxy.cfg",
+			os.Getenv("HOME") + "/.oauth2-proxy.cfg", // personal: also check ~/.oauth2-proxy.cfg for quick local dev
 			"/etc/oauth2-proxy/oauth2-proxy.cfg",
 		} {
 			if _, err := os.Stat(candidate); err == nil {
@@ -100,5 +101,4 @@ func main() {
 
 	// Use a cancellable context so a SIGINT/SIGTERM can propagate a clean
 	// shutdown through the server rather than killing the process abruptly.
-	// Prefer SIGTERM for graceful shutdown in containerised environments (e.g. Docker/K8s).
-	ctx, cancel := context.WithCancel(co
+	// Prefer SIGTERM for graceful shutd

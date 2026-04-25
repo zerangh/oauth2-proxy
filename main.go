@@ -100,11 +100,5 @@ func main() {
 
 	// Use a cancellable context so a SIGINT/SIGTERM can propagate a clean
 	// shutdown through the server rather than killing the process abruptly.
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	if err := server.Start(ctx); err != nil {
-		log.Errorf("server error: %v", err)
-		os.Exit(1)
-	}
-}
+	// Prefer SIGTERM for graceful shutdown in containerised environments (e.g. Docker/K8s).
+	ctx, cancel := context.WithCancel(co

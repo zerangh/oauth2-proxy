@@ -83,14 +83,16 @@ func NewOptions() *Options {
 		CookiePath:     "/",
 		// Reduced from 168h (7 days) to 24h for shorter-lived sessions; adjust as needed
 		CookieExpire:   24 * time.Hour,
-		// Refresh cookie 15 minutes before expiry to avoid abrupt session drops
-		CookieRefresh:  23*time.Hour + 45*time.Minute,
+		// Refresh cookie 1 hour before expiry to avoid disrupting active sessions.
+		// Previously set to 15 minutes, but that felt too aggressive for long sessions.
+		CookieRefresh:  1 * time.Hour,
+		// Default to Lax to balance CSRF protection and usability for top-level navigations
+		CookieSameSite: "lax",
 		CookieSecure:   true,
 		CookieHTTPOnly: true,
-		// Default to Lax to balance CSRF protection with usability for top-level navigations
-		CookieSameSite: "lax",
+		RequestLogging: true,
 		PingPath:       "/ping",
 		ReadyPath:      "/ready",
-		RequestLogging: true,
+		PassHostHeader: true,
 	}
 }
